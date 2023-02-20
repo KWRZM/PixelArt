@@ -19,11 +19,20 @@ imgInput.addEventListener('change',async (e) => {
         image.onload = function() {
           const canvas = document.createElement('canvas');
           const ctx = canvas.getContext('2d');
+          
           canvas.width = image.width;
           canvas.height = image.height;
-          ctx.translate(image.width, image.height);
+          if(image.width > 1600)canvas.width = 1600;
+          if(image.height > 1400)canvas.height = 1400;
+          
+          ctx.translate(canvas.width, 0);
+          ctx.scale(-1, 1);
+
+          ctx.translate(canvas.width, canvas.height);
           ctx.rotate(Math.PI);
-          ctx.drawImage(image, 0, 0);
+
+          ctx.drawImage(image, 0, 0,canvas.width, canvas.height);
+
           const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
           Jimp.create(imageData.width, imageData.height, function(err, bmp) {
             bmp.bitmap.data = imageData.data;
@@ -37,10 +46,10 @@ imgInput.addEventListener('change',async (e) => {
               const convertedData = 'data:image/bmp;base64,' + btoa(binary);
               convertis = convertedData;
               
-              const downloadLink = document.createElement('a');
+              /*const downloadLink = document.createElement('a');
               downloadLink.href = convertedData;
               downloadLink.download = 'myImage.bmp';
-              //downloadLink.click();
+              downloadLink.click();*/
 
             });
           });
@@ -54,9 +63,6 @@ imgInput.addEventListener('change',async (e) => {
 
         const buffer = Buffer.from(convertis.replace(/^data:image\/\w+;base64,/, ""), "base64");
         bytesArray = new Uint8Array(buffer);
-
-        //const buffer = await imgInput.files[0].arrayBuffer();
-        //bytesArray = new Uint8Array(buffer);
         width = parseInt(bytesArray[21].toString(16).padStart(2,"0") + bytesArray[20].toString(16).padStart(2,"0") + bytesArray[19].toString(16).padStart(2,"0") + bytesArray[18].toString(16).padStart(2,"0"),16);
         //height = parseInt(bytesArray[25].toString(16).padStart(2,"0") + bytesArray[24].toString(16).padStart(2,"0") + bytesArray[23].toString(16).padStart(2,"0") + bytesArray[22].toString(16).padStart(2,"0"),16);
         
@@ -83,7 +89,8 @@ imgInput.addEventListener('change',async (e) => {
 
 
         rapport = 3.6-Math.sqrt(height * width) / 250;
-        if(height > 1000 || width > 1000)rapport = 0.8;
+        if(rapport < 1)rapport = 1;
+        if(height >= 1000 || width >= 1000)rapport = 0.8;
     
         padding = (4 - (width * 24 / 8) % 4) % 4;
     
