@@ -2,6 +2,7 @@ body {
     background-image: url('img/bg.png');
     background-size: cover;
     background-position: center;
+    background-color: #3d4c6a99;
 }
 
 .cadreBoard {
