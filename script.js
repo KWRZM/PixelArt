@@ -22,6 +22,7 @@ imgInput.addEventListener('change',async (e) => {
           
           canvas.width = image.width;
           canvas.height = image.height;
+          
           if(image.width > 1600)canvas.width = 1600;
           if(image.height > 1400)canvas.height = 1400;
           
